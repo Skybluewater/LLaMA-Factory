@@ -36,12 +36,10 @@ if TYPE_CHECKING:
 if is_gradio_available():
     import gradio as gr
 
-if TYPE_CHECKING:
-    from .manager import Manager
-
 
 class EncoderModel(ABC):
     def __init__(self, manager: "Manager", lazy_init: bool = True) -> None:
+        self.manager = manager
         self.engine: Optional[SentenceTransformer] = None
         self.data = None
         if not lazy_init:  # read arguments from command line
@@ -49,7 +47,7 @@ class EncoderModel(ABC):
     
     @property
     def loaded(self) -> bool:
-        return self.engine is not None
+        return self.engine is not None and self.data is not None
 
     def load_model(self, data) -> Generator[str, None, None]:
         # get = lambda elem_id: data[self.manager.get_elem_by_id(elem_id)]
@@ -97,13 +95,31 @@ class EncoderModel(ABC):
         #         )
         #     else:  # str
         #         args["model_name_or_path"] = get_save_dir(model_name, finetuning_type, checkpoint_path)
-
-        self.engine = SentenceTransformer("/home/wm/Workspace/LLaMA-Factory/src/llamafactory/webui/text2vec-base-chinese")
-        # super().__init__(args)
-        yield ALERTS["info_loaded"]["en"]
+        if self.engine is not None:
+            error = ALERTS["err_exists"]["en"]
+        try:
+            get = lambda elem_id: data[self.manager.get_elem_by_id(elem_id)]
+            lang, embedding_path = get("top.lang"), get("rag.embedding_path")
+            self.engine = SentenceTransformer(embedding_path, trust_remote_code=True)
+        except Exception as e:
+            print(e)
+            yield str(e)
+            return
+        print("Embedding Model loaded")
+        yield ALERTS["info_loaded"][lang]
 
     def load_data(self, data) -> Generator[str, None, None]:
-        dataset = load_dataset("csv", data_files="/home/wm/Workspace/LLaMA-Factory/src/llamafactory/webui/csv.csv")
+        if self.engine is None:
+            yield ALERTS["err_no_model"]["en"]
+            return
+        try:
+            get = lambda elem_id: data[self.manager.get_elem_by_id(elem_id)]
+            lang, rag_path = get("top.lang"), get("rag.rag_path")
+            dataset = load_dataset("csv", data_files=rag_path, trust_remote_code=True)
+        except Exception as e:
+            print(e)
+            yield str(e)
+            return
 
         data = dataset["train"]
 
@@ -119,7 +135,7 @@ class EncoderModel(ABC):
 
         print("Dataset loaded and indexed")
         print("Loading status: " + str(self.loaded))
-        yield ALERTS["info_loaded"]["en"]
+        yield ALERTS["info_loaded"][lang]
     
     def search(self, query: str, k: int = 3):
         """a function that embeds a new query and returns the most probable results"""
@@ -144,28 +160,29 @@ class EncoderModel(ABC):
         return PROMPT
 
     def unload_model(self, data) -> Generator[str, None, None]:
-        # lang = data[self.manager.get_elem_by_id("top.lang")]
+        lang = data[self.manager.get_elem_by_id("top.lang")]
 
         # if self.demo_mode:
         #     gr.Warning(ALERTS["err_demo"][lang])
         #     yield ALERTS["err_demo"][lang]
         #     return
 
-        # yield ALERTS["info_unloading"][lang]
-        # self.engine = None
-        # torch_gc()
-        # yield ALERTS["info_unloaded"][lang]
-        pass
+        yield ALERTS["info_unloading"][lang]
+        self.engine = None
+        yield ALERTS["info_unloaded"][lang]
 
-    def append(
-        self,
-        chatbot: List[List[Optional[str]]],
-        messages: Sequence[Dict[str, str]],
-        role: str,
-        query: str,
-    ) -> Tuple[List[List[Optional[str]]], List[Dict[str, str]], str]:
-        pass
-        # return chatbot + [[query, None]], messages + [{"role": role, "content": query}], ""
+    def unload_data(self, data) -> Generator[str, None, None]:
+        lang = data[self.manager.get_elem_by_id("top.lang")]
+
+        # if self.demo_mode:
+        #     gr.Warning(ALERTS["err_demo"][lang])
+        #     yield ALERTS["err_demo"][lang]
+        #     return
+
+        yield ALERTS["info_unloading"][lang]
+        self.data = None
+        yield ALERTS["info_unloaded"][lang]
+
 
     def stream(
         self,

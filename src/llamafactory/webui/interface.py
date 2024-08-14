@@ -23,6 +23,7 @@ from .components import (
     create_infer_tab,
     create_top,
     create_train_tab,
+    create_rag_tab,
 )
 from .css import CSS
 from .engine import Engine
@@ -61,7 +62,7 @@ def create_ui(demo_mode: bool = False) -> "gr.Blocks":
                 engine.manager.add_elems("export", create_export_tab(engine))
         
         with gr.Tab("Rag"):
-                engine.manager.add_elems("export", create_export_tab(engine))
+                engine.manager.add_elems("rag", create_rag_tab(engine))
 
         demo.load(engine.resume, outputs=engine.manager.get_elem_list(), concurrency_limit=None)
         lang.change(engine.change_lang, [lang], engine.manager.get_elem_list(), queue=False)

@@ -27,6 +27,7 @@ from .common import QUANTIZATION_BITS, get_save_dir
 from .locales import ALERTS
 
 from .variables import embedding_model
+from .encoder import EncoderModel
 
 if TYPE_CHECKING:
     from ..chat import BaseEngine
@@ -140,14 +141,15 @@ class WebChatModel(ChatModel):
         max_new_tokens: int,
         top_p: float,
         temperature: float,
+        embedding_model: Optional[EncoderModel] = None,
     ) -> Generator[Tuple[List[List[Optional[str]]], List[Dict[str, str]]], None, None]:
         chatbot[-1][1] = ""
         response = ""
         print(embedding_model)
-        if embedding_model.loaded:
+        if embedding_model and embedding_model.loaded:
             query = messages[-1]["content"]
-            print(query)
-            scores, context = embedding_model.search(query)
+            # print(query)
+            scores, context = embedding_model.search(query, 5)
             prompt = embedding_model.format_prompt(query, context, 5)
             print(prompt)
             system += prompt

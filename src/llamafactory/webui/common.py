@@ -98,6 +98,29 @@ def save_config(lang: str, model_name: Optional[str] = None, model_path: Optiona
         safe_dump(user_config, f)
 
 
+def save_rag_config(rag_path: Optional[str] = None) -> None:
+    r"""
+    Saves user config.
+    """
+    os.makedirs(DEFAULT_CACHE_DIR, exist_ok=True)
+    user_config = load_config()
+
+    user_config["rag_path"] = rag_path
+
+    with open(get_config_path(), "w", encoding="utf-8") as f:
+        safe_dump(user_config, f)
+
+
+def save_embedding_config(embedding_path: Optional[str] = None) -> None:
+    os.makedirs(DEFAULT_CACHE_DIR, exist_ok=True)
+    user_config = load_config()
+
+    user_config["embedding_path"] = embedding_path
+
+    with open(get_config_path(), "w", encoding="utf-8") as f:
+        safe_dump(user_config, f)
+
+
 def get_model_path(model_name: str) -> str:
     r"""
     Gets the model path according to the model name.

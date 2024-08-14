@@ -57,14 +57,25 @@ def create_chat_box(
 
     tools.input(check_json_schema, inputs=[tools, engine.manager.get_elem_by_id("top.lang")])
 
+    def on_click(chatbot, messages, role, query):
+        return engine.chatter.append(chatbot, messages, role, query)
+
+    def on_then(chatbot, messages, system, tools, image, max_new_tokens, top_p, temperature):
+        for chatbot, messages in engine.chatter.stream(
+            chatbot, messages, system, tools, image, max_new_tokens, top_p, temperature, engine.embedding_model
+        ):
+            # print(str(type(chatbot)) + " " + str(type(messages)))
+            yield chatbot, messages
+
+    # Call the functions sequentially
     submit_btn.click(
-        engine.chatter.append,
+        on_click,
         [chatbot, messages, role, query],
         [chatbot, messages, query],
     ).then(
-        engine.chatter.stream,
-        [chatbot, messages, system, tools, image, max_new_tokens, top_p, temperature],
-        [chatbot, messages],
+        on_then,
+        inputs=[chatbot, messages, system, tools, image, max_new_tokens, top_p, temperature],
+        outputs=[chatbot, messages],
     )
     clear_btn.click(lambda: ([], []), outputs=[chatbot, messages])
 

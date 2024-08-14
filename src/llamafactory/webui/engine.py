@@ -20,6 +20,7 @@ from .locales import LOCALES
 from .manager import Manager
 from .runner import Runner
 from .utils import create_ds_config, get_time
+from .encoder import EncoderModel
 
 
 if TYPE_CHECKING:
@@ -31,6 +32,7 @@ class Engine:
         self.demo_mode = demo_mode
         self.pure_chat = pure_chat
         self.manager = Manager()
+        self.embedding_model = EncoderModel(self.manager)
         self.runner = Runner(self.manager, demo_mode)
         self.chatter = WebChatModel(self.manager, demo_mode, lazy_init=(not pure_chat))
         if not demo_mode:

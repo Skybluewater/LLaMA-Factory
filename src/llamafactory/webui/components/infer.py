@@ -41,8 +41,7 @@ def create_infer_tab(engine: "Engine") -> Dict[str, "Component"]:
     with gr.Row():
         load_btn = gr.Button()
         unload_btn = gr.Button()
-        load_rag_btn = gr.Button()
-
+    
     info_box = gr.Textbox(show_label=False, interactive=False)
 
     input_elems.update({infer_backend, infer_dtype})
@@ -61,10 +60,6 @@ def create_infer_tab(engine: "Engine") -> Dict[str, "Component"]:
 
     load_btn.click(engine.chatter.load_model, input_elems, [info_box]).then(
         lambda: gr.Column(visible=engine.chatter.loaded), outputs=[chat_elems["chat_box"]]
-    )
-
-    load_rag_btn.click(embedding_model.load_model, None, None).then(
-        embedding_model.load_data, None, None
     )
 
     unload_btn.click(engine.chatter.unload_model, input_elems, [info_box]).then(

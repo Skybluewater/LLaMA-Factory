@@ -18,6 +18,7 @@ from .export import create_export_tab
 from .infer import create_infer_tab
 from .top import create_top
 from .train import create_train_tab
+from .rag import create_rag_tab
 
 
 __all__ = [
@@ -27,4 +28,5 @@ __all__ = [
     "create_infer_tab",
     "create_top",
     "create_train_tab",
+    "create_rag_tab",
 ]

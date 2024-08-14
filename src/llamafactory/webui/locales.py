@@ -1637,16 +1637,86 @@ LOCALES = {
     },
     "load_rag_btn": {
         "en": {
-            "value": "Load RAG model",
+            "value": "Load RAG dataset",
         },
         "ru": {
-            "value": "Загрузить RAG модель",
+            "value": "Загрузить RAG данных",
         },
         "zh": {
-            "value": "加载 RAG 模型",
+            "value": "加载 RAG 数据集",
         },
         "ko": {
-            "value": "모델 RAG 불러오기",
+            "value": "데이터셋 RAG 불러오기",
+        },
+    },
+    "unload_rag_btn": {
+        "en": {
+            "value": "Unload RAG dataset",
+        },
+        "ru": {
+            "value": "Выгрузить RAG данных",
+        },
+        "zh": {
+            "value": "卸载 RAG 数据集",
+        },
+        "ko": {
+            "value": "데이터셋 RAG 언로드",
+        },
+    },
+    "load_embedding_btn": {
+        "en": {
+            "value": "Load Embedding model",
+        },
+        "ru": {
+            "value": "Загрузить Embedding модель",
+        },
+        "zh": {
+            "value": "加载 Embedding 模型",
+        },
+        "ko": {
+            "value": "모델 Embedding 불러오기",
+        },
+    },
+    "unload_embedding_btn": {
+        "en": {
+            "value": "Unload Embedding model",
+        },
+        "ru": {
+            "value": "Выгрузить Embedding модель",
+        },
+        "zh": {
+            "value": "卸载 Embedding 模型",
+        },
+        "ko": {
+            "value": "모델 Embedding 언로드",
+        },
+    },
+    "rag_path": {
+        "en": {
+            "label": "RAG Path",
+        },
+        "ru": {
+            "label": "Выгрузить RAG модель",
+        },
+        "zh": {
+            "label": "RAG 路径",
+        },
+        "ko": {
+            "label": "모델 RAG 언로드",
+        },
+    },
+    "embedding_path": {
+        "en": {
+            "label": "Embedding Model Path",
+        },
+        "ru": {
+            "label": "Выгрузить Embedding модель",
+        },
+        "zh": {
+            "label": "Embedding 模型路径",
+        },
+        "ko": {
+            "label": "모델 RAG 언로드",
         },
     },
     "info_box": {
