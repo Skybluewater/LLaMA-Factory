@@ -38,6 +38,10 @@ if is_gradio_available():
 
 
 class EncoderModel(ABC):
+    SYS_PROMPT = """You are an assistant for answering questions.
+You are given the extracted parts of a long document and a question. Provide a conversational answer.
+If you don't know the answer, just say "I do not know." Don't make up an answer. Limit your answer in 500 words"""
+
     def __init__(self, manager: "Manager", lazy_init: bool = True) -> None:
         self.manager = manager
         self.engine: Optional[SentenceTransformer] = None
@@ -50,51 +54,6 @@ class EncoderModel(ABC):
         return self.engine is not None and self.data is not None
 
     def load_model(self, data) -> Generator[str, None, None]:
-        # get = lambda elem_id: data[self.manager.get_elem_by_id(elem_id)]
-        # lang, model_name, model_path = get("top.lang"), get("top.model_name"), get("top.model_path")
-        # finetuning_type, checkpoint_path = get("top.finetuning_type"), get("top.checkpoint_path")
-        # error = ""
-        # if self.loaded:
-        #     error = ALERTS["err_exists"][lang]
-        # elif not model_name:
-        #     error = ALERTS["err_no_model"][lang]
-        # elif not model_path:
-        #     error = ALERTS["err_no_path"][lang]
-        # elif self.demo_mode:
-        #     error = ALERTS["err_demo"][lang]
-
-        # if error:
-        #     gr.Warning(error)
-        #     yield error
-        #     return
-
-        # if get("top.quantization_bit") in QUANTIZATION_BITS:
-        #     quantization_bit = int(get("top.quantization_bit"))
-        # else:
-        #     quantization_bit = None
-
-        # yield ALERTS["info_loading"][lang]
-        # args = dict(
-        #     model_name_or_path=model_path,
-        #     finetuning_type=finetuning_type,
-        #     quantization_bit=quantization_bit,
-        #     quantization_method=get("top.quantization_method"),
-        #     template=get("top.template"),
-        #     flash_attn="fa2" if get("top.booster") == "flashattn2" else "auto",
-        #     use_unsloth=(get("top.booster") == "unsloth"),
-        #     visual_inputs=get("top.visual_inputs"),
-        #     rope_scaling=get("top.rope_scaling") if get("top.rope_scaling") in ["linear", "dynamic"] else None,
-        #     infer_backend=get("infer.infer_backend"),
-        #     infer_dtype=get("infer.infer_dtype"),
-        # )
-
-        # if checkpoint_path:
-        #     if finetuning_type in PEFT_METHODS:  # list
-        #         args["adapter_name_or_path"] = ",".join(
-        #             [get_save_dir(model_name, finetuning_type, adapter) for adapter in checkpoint_path]
-        #         )
-        #     else:  # str
-        #         args["model_name_or_path"] = get_save_dir(model_name, finetuning_type, checkpoint_path)
         if self.engine is not None:
             error = ALERTS["err_exists"]["en"]
         try:
@@ -153,8 +112,11 @@ class EncoderModel(ABC):
     @staticmethod
     def format_prompt(prompt, retrieved_documents, k):
         """using the retrieved documents we will prompt the model to generate our responses"""
-        PROMPT = f"Question:{prompt}\nContext:"
         k = min(k, len(retrieved_documents))
+        if k == 0:
+            return ""
+        
+        PROMPT = f"Command:{EncoderModel.SYS_PROMPT}\nQuestion:{prompt}\nContext:"
         for idx in range(k):
             PROMPT+= f"{retrieved_documents[idx]}\n"
         return PROMPT

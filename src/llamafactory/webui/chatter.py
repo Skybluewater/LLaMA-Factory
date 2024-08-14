@@ -145,13 +145,14 @@ class WebChatModel(ChatModel):
     ) -> Generator[Tuple[List[List[Optional[str]]], List[Dict[str, str]]], None, None]:
         chatbot[-1][1] = ""
         response = ""
-        print(embedding_model)
         if embedding_model and embedding_model.loaded:
             query = messages[-1]["content"]
             # print(query)
-            scores, context = embedding_model.search(query, 5)
+            _, context = embedding_model.search(query, 5)
             prompt = embedding_model.format_prompt(query, context, 5)
             print(prompt)
+            if system is None:
+                system = ""
             system += prompt
         for new_text in self.stream_chat(
             messages, system, tools, image, max_new_tokens=max_new_tokens, top_p=top_p, temperature=temperature

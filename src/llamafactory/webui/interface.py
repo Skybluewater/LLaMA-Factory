@@ -36,11 +36,11 @@ if is_gradio_available():
 def create_ui(demo_mode: bool = False) -> "gr.Blocks":
     engine = Engine(demo_mode=demo_mode, pure_chat=False)
 
-    with gr.Blocks(title="LLaMA Board", css=CSS) as demo:
+    with gr.Blocks(title="北京理工大学数字表演实验室", css=CSS) as demo:
         if demo_mode:
-            gr.HTML("<h1><center>LLaMA Board: A One-stop Web UI for Getting Started with LLaMA Factory</center></h1>")
+            gr.HTML("<h1><center>BIT LLaMA Board: A One-stop Web UI for Getting Started with LLaMA Factory by BITers</center></h1>")
             gr.HTML(
-                '<h3><center>Visit <a href="https://github.com/hiyouga/LLaMA-Factory" target="_blank">'
+                '<h3><center>Visit <a href="https://github.com/skybluewater/LLaMA-Factory" target="_blank">'
                 "LLaMA Factory</a> for details.</center></h3>"
             )
             gr.DuplicateButton(value="Duplicate Space for private use", elem_classes="duplicate-button")
