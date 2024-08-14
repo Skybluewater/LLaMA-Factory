@@ -33,7 +33,17 @@ def create_top() -> Dict[str, "Component"]:
     available_models = list(SUPPORTED_MODELS.keys()) + ["Custom"]
 
     with gr.Row():
-        lang = gr.Dropdown(choices=["en", "ru", "zh", "ko"], scale=1)
+        # 让lang不要显示在界面上
+        lang = gr.Dropdown(choices=["en", "ru", "zh", "ko"], scale=1, visible=False)
+        # 新建一个图像块，使用直链展示图片
+        gr.Image(
+            value="https://eiuguwrgbjow.oss-cn-beijing.aliyuncs.com/Panda/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20240813211517.jpg",
+            scale=0.2,
+            show_label=False,
+            interactive=False,
+            # allow_fullscreen=False,  # 禁用全屏功能
+            # allow_download=False     # 禁用下载功能
+        )
         model_name = gr.Dropdown(choices=available_models, scale=3)
         model_path = gr.Textbox(scale=3)
 

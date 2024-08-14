@@ -1635,6 +1635,20 @@ LOCALES = {
             "value": "모델 언로드",
         },
     },
+    "load_rag_btn": {
+        "en": {
+            "value": "Load RAG model",
+        },
+        "ru": {
+            "value": "Загрузить RAG модель",
+        },
+        "zh": {
+            "value": "加载 RAG 模型",
+        },
+        "ko": {
+            "value": "모델 RAG 불러오기",
+        },
+    },
     "info_box": {
         "en": {
             "value": "Model unloaded, please load a model first.",

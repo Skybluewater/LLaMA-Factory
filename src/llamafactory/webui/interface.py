@@ -59,6 +59,9 @@ def create_ui(demo_mode: bool = False) -> "gr.Blocks":
         if not demo_mode:
             with gr.Tab("Export"):
                 engine.manager.add_elems("export", create_export_tab(engine))
+        
+        with gr.Tab("Rag"):
+                engine.manager.add_elems("export", create_export_tab(engine))
 
         demo.load(engine.resume, outputs=engine.manager.get_elem_list(), concurrency_limit=None)
         lang.change(engine.change_lang, [lang], engine.manager.get_elem_list(), queue=False)

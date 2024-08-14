@@ -26,6 +26,7 @@ from ..extras.packages import is_gradio_available
 from .common import QUANTIZATION_BITS, get_save_dir
 from .locales import ALERTS
 
+from .variables import embedding_model
 
 if TYPE_CHECKING:
     from ..chat import BaseEngine
@@ -133,7 +134,7 @@ class WebChatModel(ChatModel):
         self,
         chatbot: List[List[Optional[str]]],
         messages: Sequence[Dict[str, str]],
-        system: str,
+        system: Optional[str],
         tools: str,
         image: Optional[NDArray],
         max_new_tokens: int,
@@ -142,6 +143,14 @@ class WebChatModel(ChatModel):
     ) -> Generator[Tuple[List[List[Optional[str]]], List[Dict[str, str]]], None, None]:
         chatbot[-1][1] = ""
         response = ""
+        print(embedding_model)
+        if embedding_model.loaded:
+            query = messages[-1]["content"]
+            print(query)
+            scores, context = embedding_model.search(query)
+            prompt = embedding_model.format_prompt(query, context, 5)
+            print(prompt)
+            system += prompt
         for new_text in self.stream_chat(
             messages, system, tools, image, max_new_tokens=max_new_tokens, top_p=top_p, temperature=temperature
         ):
