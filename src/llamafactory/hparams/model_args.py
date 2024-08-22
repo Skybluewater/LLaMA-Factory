@@ -146,7 +146,7 @@ class ModelArguments:
         metadata={"help": "Backend engine used at inference."},
     )
     vllm_maxlen: int = field(
-        default=2048,
+        default=10240,
         metadata={"help": "Maximum sequence (prompt + response) length of the vLLM engine."},
     )
     vllm_gpu_util: float = field(

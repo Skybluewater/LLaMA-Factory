@@ -40,9 +40,8 @@ def create_top() -> Dict[str, "Component"]:
             value="https://eiuguwrgbjow.oss-cn-beijing.aliyuncs.com/Panda/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20240813211517.jpg",
             scale=0.2,
             show_label=False,
-            interactive=False,
-            # allow_fullscreen=False,  # 禁用全屏功能
-            # allow_download=False     # 禁用下载功能
+            show_fullscreen_button = False,
+            show_download_button = False,
         )
         model_name = gr.Dropdown(choices=available_models, scale=3)
         model_path = gr.Textbox(scale=3)
@@ -59,6 +58,7 @@ def create_top() -> Dict[str, "Component"]:
             rope_scaling = gr.Radio(choices=["none", "linear", "dynamic"], value="none", scale=2)
             booster = gr.Radio(choices=["auto", "flashattn2", "unsloth"], value="auto", scale=2)
             visual_inputs = gr.Checkbox(scale=1)
+            
 
     model_name.change(get_model_info, [model_name], [model_path, template, visual_inputs], queue=False).then(
         list_checkpoints, [model_name, finetuning_type], [checkpoint_path], queue=False

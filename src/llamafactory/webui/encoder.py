@@ -119,6 +119,7 @@ If you don't know the answer, just say "I do not know." Don't make up an answer.
         PROMPT = f"Command:{EncoderModel.SYS_PROMPT}\nQuestion:{prompt}\nContext:"
         for idx in range(k):
             PROMPT+= f"{retrieved_documents[idx]}\n"
+        print(PROMPT)
         return PROMPT
 
     def unload_model(self, data) -> Generator[str, None, None]:

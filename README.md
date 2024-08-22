@@ -1,3 +1,5 @@
+nohup llamafactory-cli api /examples/inference/glm_vllm.yaml > /home/wm/Workspace/running_log/output.log 2>&1 &
+
 ![# LLaMA Factory](assets/logo.png)
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/hiyouga/LLaMA-Factory?style=social)](https://github.com/hiyouga/LLaMA-Factory/stargazers)

@@ -1,0 +1,4 @@
+model_name_or_path: /home/wm/llms/glm-4-9b-chat-1m
+template: llama3
+infer_backend: vllm
+vllm_enforce_eager: true
