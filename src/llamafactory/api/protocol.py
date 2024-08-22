@@ -151,3 +151,27 @@ class ScoreEvaluationResponse(BaseModel):
     object: Literal["score.evaluation"] = "score.evaluation"
     model: str
     scores: List[float]
+
+
+class EmbeddingRequest(BaseModel):
+    model: str
+    input: Union[Union[List[str], List[int]], str]
+    encoding_format: Optional[str] = None
+
+
+class EmbeddingDataResponse(BaseModel):
+    object: Literal["embedding"] = "embedding"
+    embedding: List[float]
+    index: int
+
+
+class EmbeddingCompletionResponseUsage(BaseModel):
+    prompt_tokens: int
+    total_tokens: int
+
+
+class EmbeddingResponse(BaseModel):
+    object: Literal["list"] = "list"
+    data: List[EmbeddingDataResponse]
+    model: str
+    usage: EmbeddingCompletionResponseUsage

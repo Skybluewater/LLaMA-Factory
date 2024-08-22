@@ -18,7 +18,7 @@ from typing import Optional
 
 from typing_extensions import Annotated
 
-from ..chat import ChatModel
+from ..chat import ChatModel, EmbeddingModel
 from ..extras.misc import torch_gc
 from ..extras.packages import is_fastapi_available, is_starlette_available, is_uvicorn_available
 from .chat import (
@@ -26,6 +26,7 @@ from .chat import (
     create_score_evaluation_response,
     create_stream_chat_completion_response,
 )
+from .embedding import create_embedding_response
 from .protocol import (
     ChatCompletionRequest,
     ChatCompletionResponse,
@@ -33,11 +34,13 @@ from .protocol import (
     ModelList,
     ScoreEvaluationRequest,
     ScoreEvaluationResponse,
+    EmbeddingRequest,
+    EmbeddingResponse
 )
 
 
 if is_fastapi_available():
-    from fastapi import Depends, FastAPI, HTTPException, status
+    from fastapi import Depends, FastAPI, HTTPException, status, Request
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
@@ -56,7 +59,7 @@ async def lifespan(app: "FastAPI"):  # collects GPU memory
     torch_gc()
 
 
-def create_app(chat_model: "ChatModel") -> "FastAPI":
+def create_app(chat_model: "ChatModel", embedding_model: "EmbeddingModel" = None) -> "FastAPI":
     app = FastAPI(lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
@@ -109,13 +112,26 @@ def create_app(chat_model: "ChatModel") -> "FastAPI":
             raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Not allowed")
 
         return await create_score_evaluation_response(request, chat_model)
+    
+    @app.post(
+        "/v1/embeddings",
+        response_model=EmbeddingResponse,
+        status_code=status.HTTP_200_OK,
+        dependencies=[Depends(verify_api_key)],
+    )
+    async def create_embedding_completion(request: EmbeddingRequest):
+        if not embedding_model or not embedding_model.loaded:
+            raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Not allowed")
+
+        return await create_embedding_response(request, embedding_model)
 
     return app
 
 
 def run_api() -> None:
     chat_model = ChatModel()
-    app = create_app(chat_model)
+    embedding_model = EmbeddingModel()
+    app = create_app(chat_model, embedding_model)
     api_host = os.environ.get("API_HOST", "0.0.0.0")
     api_port = int(os.environ.get("API_PORT", "7860"))
     print("Visit http://localhost:{}/docs for API document.".format(api_port))

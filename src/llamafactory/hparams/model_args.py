@@ -221,6 +221,10 @@ class ModelArguments:
         default=False,
         metadata={"help": "For debugging purposes, print the status of the parameters in the model."},
     )
+    embedding_model_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to the embedding model weight or identifier from huggingface.co/models."},
+    )
 
     def __post_init__(self):
         self.compute_dtype: Optional["torch.dtype"] = None
